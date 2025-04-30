@@ -32,6 +32,7 @@ fun FlipCardCreateScreen(
     subjectId: Int,
     onBackClick: () -> Unit,
     appViewModel: AppViewModel, // Adicione o AppViewModel como parâmetro
+    navigateToSubjectDetailScreen: () -> Unit = {}
 ) {
     var name by remember { mutableStateOf("") }
     var front by remember { mutableStateOf("") }
@@ -121,6 +122,8 @@ fun FlipCardCreateScreen(
                     )
                     //Ai salva isso na API
                     appViewModel.addFlashcardBasic(basicFlashcard.subjectId, basicFlashcard.question, basicFlashcard.answer)
+
+                    navigateToSubjectDetailScreen()
                 }
             )
             Spacer(modifier = Modifier.height(40.dp))

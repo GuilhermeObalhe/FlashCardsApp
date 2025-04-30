@@ -9,11 +9,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.ui.screens.clozeScreen.ClozeCardCreateScreen
 import com.example.flashcardsapp.ui.screens.createExercise.CreateExerciseScreen
 import com.example.flashcardsapp.ui.screens.flipCardCreate.FlipCardCreateScreen
+import com.example.flashcardsapp.ui.screens.flipCardExercise.FlipCardExerciseScreen
 import com.example.flashcardsapp.ui.screens.homePage.AssuntosScreen
 import com.example.flashcardsapp.ui.screens.quizScreen.QuizCardCreateScreen
+import com.example.flashcardsapp.ui.screens.quizScreen.QuizCardExerciseScreen
 import com.example.flashcardsapp.ui.screens.subjectPage.SubjectDetailScreen
 import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 
@@ -46,7 +49,16 @@ fun FlashCardsApp() {
                 onBackClick = { navController.popBackStack() },
                 onNavigateToCreateExercise = { subjectId ->
                     navController.navigate("create_exercise/$subjectId")
+                },
+                navigateToFlipCardExerciseScreen = { exercise ->
+                    val exerciseId = exercise.id
+                    navController.navigate("flip_card/$subjectId/$exerciseId")
+                },
+                navigateToQuizCardExerciseScreen = { exercise ->
+                    val exerciseId = exercise.id
+                    navController.navigate("quiz_card/$subjectId/$exerciseId")
                 }
+
             )
         }
 
@@ -70,7 +82,10 @@ fun FlashCardsApp() {
             FlipCardCreateScreen(
                 subjectId = subjectId!!.toInt(),
                 onBackClick = { navController.popBackStack() },
-                appViewModel = appViewModel
+                appViewModel = appViewModel,
+                navigateToSubjectDetailScreen = {
+                    navController.navigate("subject_detail/$subjectId")
+                }
             )
         }
 
@@ -79,7 +94,10 @@ fun FlashCardsApp() {
             QuizCardCreateScreen(
                 subjectId = subjectId!!.toInt(),
                 appViewModel = appViewModel,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                navigateToSubjectDetailScreen = {
+                    navController.navigate("subject_detail/$subjectId")
+                }
             )
         }
 
@@ -90,6 +108,34 @@ fun FlashCardsApp() {
                 appViewModel = appViewModel,
                 onBackClick = { navController.popBackStack() }
             )
+        }
+
+        composable("flip_card/{subjectId}/{exerciseId}"){
+            val subjectId = it.arguments?.getString("subjectId")
+            val exerciseId = it.arguments?.getString("exerciseId")
+            val flashCardList = appViewModel.flashcardsBasic.filter { it.subjectId == subjectId }
+            val basicFlashcard = flashCardList.find { it.id == exerciseId }
+
+            if (basicFlashcard != null) {
+                FlipCardExerciseScreen(
+                    flashcard = basicFlashcard,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+        }
+        composable ("quiz_card/{subjectId}/{exerciseId}"){
+            val subjectId = it.arguments?.getString("subjectId")
+            val exerciseId = it.arguments?.getString("exerciseId")
+            val flashCardList = appViewModel.flashcardQuiz.filter { it.subjectId == subjectId }
+            val quizFlashcard = flashCardList.find { it.id == exerciseId }
+
+            if (quizFlashcard != null) {
+                QuizCardExerciseScreen(
+                    quizCard = quizFlashcard,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
         }
 
     }

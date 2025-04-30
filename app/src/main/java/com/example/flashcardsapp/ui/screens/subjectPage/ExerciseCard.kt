@@ -29,7 +29,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ExerciseCard(
-    onButtonClick: (() -> Unit)? = null
+    onButtonClick: (() -> Unit)? = null,
+    text: String
 ){
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -54,7 +55,7 @@ fun ExerciseCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Exercício",
+                    text = text,
                     fontWeight = FontWeight.Bold,
                     fontSize = 30.sp,
                     color = Color.White,

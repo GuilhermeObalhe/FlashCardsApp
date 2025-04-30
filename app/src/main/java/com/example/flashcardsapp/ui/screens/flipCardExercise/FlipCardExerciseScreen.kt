@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.flashcardsapp.entities.BasicFlashcard
 import com.example.flashcardsapp.ui.components.HeaderButtons
-import com.example.flashcardsapp.models.BasicFlashcard
 
 @Composable
 fun FlipCardExerciseScreen(
@@ -32,16 +32,3 @@ fun FlipCardExerciseScreen(
     }
 }
 
-@Preview
-@Composable
-fun FlipCardExercise(){
-    FlipCardExerciseScreen(
-        onBackClick = {},
-        flashcard = BasicFlashcard(
-            id = 1,
-            subjectId = 1,
-            question = "Qual é a capital do Brasil?",
-            answer = "Brasilia"
-        )
-    )
-}

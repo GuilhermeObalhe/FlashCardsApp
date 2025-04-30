@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.flashcardsapp.entities.BasicFlashcard
 import com.example.flashcardsapp.entities.Location
+import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.entities.Subject
 import java.util.UUID
 
@@ -31,10 +32,9 @@ class AppViewModel : ViewModel() {
     }
 
     // Lista de flashcards basic mockados
-    val flashcardsBasic = mutableStateListOf(
-        BasicFlashcard("1", "1", "Teste", "teste"),
-        BasicFlashcard("2", "1", "Teste2", "teste2"),
-        BasicFlashcard("3", "2", "Teste3", "teste3")
+    val flashcardsBasic = mutableStateListOf<BasicFlashcard>(
+        BasicFlashcard("1", "1", "Qual é a capital do Brasil?", "Brasília"),
+        BasicFlashcard("2", "1", "Quem pintou a Mona Lisa?", "Leonardo da Vinci"),
     )
 
     fun addFlashcardBasic(subjectId: String, front: String, back: String) {
@@ -42,6 +42,20 @@ class AppViewModel : ViewModel() {
         flashcardsBasic.add(BasicFlashcard(id, subjectId, front, back))
         Log.d("Na ViewModel", "Tamanho = ${flashcardsBasic.size}")
     }
+
+    val flashcardQuiz = mutableStateListOf<QuizCard>(
+        QuizCard("1", "1", "Qual é a capital do Brasil?", listOf("São Paulo", "Rio de Janeiro", "Brasília", "Belo Horizonte"), 3),
+        QuizCard("2", "1", "Quem pintou a Mona Lisa?", listOf("Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Michelangelo"), 1),
+        QuizCard("3", "1", "Qual é o maior planeta do sistema solar?", listOf("Vênus", "Marte", "Júpiter", "Terra"), 3),
+
+
+    )
+    fun addQuizCard(subjectId: String, question: String, options: List<String>, correctAnswerIndex: Int) {
+        val id = (flashcardQuiz.size + 1).toString()
+        val quizCard = QuizCard(id, subjectId, question, options, correctAnswerIndex)
+        flashcardQuiz.add(quizCard)
+    }
+
 
     val locations = mutableStateListOf(
         Location("1", "Quarto"),
