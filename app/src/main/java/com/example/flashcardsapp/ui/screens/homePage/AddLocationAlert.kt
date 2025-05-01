@@ -1,5 +1,6 @@
 package com.example.flashcardsapp.ui.screens.homePage
 
+import android.util.Log
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField

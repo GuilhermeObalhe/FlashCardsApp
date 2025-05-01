@@ -30,8 +30,7 @@ import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 @Composable
 fun AddSubjectOverlay(
     isOpen: MutableState<Boolean>,
-    onAddSubject: (String) -> Unit,
-    appViewModel: AppViewModel = viewModel()      // ① injeta o ViewModel
+    appViewModel: AppViewModel
 ) {
     val newSubjectName = remember { mutableStateOf("") }
 
@@ -72,7 +71,6 @@ fun AddSubjectOverlay(
                                 appViewModel.addSubject(name)     // POST /subjects :contentReference[oaicite:1]{index=1}
                                 isOpen.value = false
                                 newSubjectName.value = ""
-                                onAddSubject(name)
                             }
                         }
                     )

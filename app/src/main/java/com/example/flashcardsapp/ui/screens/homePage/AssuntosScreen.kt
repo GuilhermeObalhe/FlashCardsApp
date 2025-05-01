@@ -3,6 +3,7 @@ package com.example.flashcardsapp.ui.screens.homePage
 import PoppinsRegular
 import PoppinsSemiBold
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.flashcardsapp.data.entities.LocationEntity
+import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.Subject
 import com.example.flashcardsapp.ui.components.SubjectCard
 import com.example.flashcardsapp.ui.components.Title
@@ -115,22 +118,26 @@ fun AssuntosScreen(
     // Menu lateral
     MenuOverlay(
         isOpen = isMenuOpen,
-        locations = locationsViewModel.locations,
-        selectedLocation = locationsViewModel.selectedLocation.value,
+        locations = locationsViewModel.locations.map { LocationEntity(it.id.toLong(), it.name) },
+        selectedLocation = locationsViewModel.selectedLocation.value?.let {
+            LocationEntity(it.id, it.name)
+        },
         onSelectLocation = {
-            locationsViewModel.selectLocation(it)
+            locationsViewModel.selectLocation(LocationEntity(it.id, it.name))
             isMenuOpen.value = false
-                           },
+        },
         onAddLocationClick = { showAddDialog.value = true },
-        onAddLocation = { locationsViewModel.addLocation(it) },
-        onRemoveLocation = { locationsViewModel.removeLocation(it) }
+        onAddLocation = { locationsViewModel.saveLocation(it) },
+        onRemoveLocation = {
+            locationsViewModel.deleteLocation(it)
+        }
     )
 
     // Adição de assunto
     if (isAddSubjectOpen.value) {
         AddSubjectOverlay(
             isOpen = isAddSubjectOpen,
-            onAddSubject = { viewModel.addSubject(it) }
+            appViewModel = viewModel
         )
     }
 
@@ -139,8 +146,8 @@ fun AssuntosScreen(
         AddLocationAlert(
             showDialog = showAddDialog,
             onConfirm = {
-                locationsViewModel.addLocation(it)
-                locationsViewModel.selectLocation(locationsViewModel.locations.last())
+                locationsViewModel.saveLocation(it)
+                locationsViewModel.selectLocation(locationsViewModel.locationsFromDb.value[locationsViewModel.locationsFromDb.value.size - 1])
             }
         )
     }

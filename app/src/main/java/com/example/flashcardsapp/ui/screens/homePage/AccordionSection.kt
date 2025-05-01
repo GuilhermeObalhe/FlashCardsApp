@@ -33,6 +33,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,20 +47,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flashcardsapp.R
+import com.example.flashcardsapp.data.entities.LocationEntity
 import com.example.flashcardsapp.entities.Location
+import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun AccordionSection(
     title: String,
-    locations: List<Location>,
-    selectedLocation: Location?,
+    selectedLocation: LocationEntity?,
     onAddClick: () -> Unit,
-    onRemove: (Location) -> Unit,
-    onSelect: (Location) -> Unit
+    onRemove: (LocationEntity) -> Unit,
+    onSelect: (LocationEntity) -> Unit,
 ) {
+    val appViewModel: AppViewModel = hiltViewModel()
+    val locations by appViewModel.locationsFromDb.collectAsState()
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -87,6 +92,7 @@ fun AccordionSection(
     }
 
     if (isExpanded) {
+
         locations.forEach { location ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -4,13 +4,24 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.flashcardsapp.data.dao.LocationDao
+import com.example.flashcardsapp.data.entities.LocationEntity
 import com.example.flashcardsapp.entities.BasicFlashcard
 import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.entities.Subject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
-class AppViewModel : ViewModel() {
+@HiltViewModel
+class AppViewModel @Inject constructor(
+    private val locationDao: LocationDao) : ViewModel() {
 
     // Lista de assuntos (mockada)
     val subjects = mutableStateListOf(
@@ -63,23 +74,45 @@ class AppViewModel : ViewModel() {
         Location("3", "Ônibus")
     )
 
-    val selectedLocation = mutableStateOf<Location?>(null)
+    val selectedLocation = mutableStateOf<LocationEntity?>(null)
 
-    fun addLocation(name: String) {
-        val id = UUID.randomUUID().toString()
-        locations.add(Location(id, name))
-        selectedLocation.value = locations.last()
-    }
 
-    fun removeLocation(location: Location) {
-        locations.remove(location)
-        if (selectedLocation.value == location) {
-            selectedLocation.value = null
-        }
-    }
-
-    fun selectLocation(location: Location) {
+    fun selectLocation(location: LocationEntity) {
         selectedLocation.value = location
     }
 
+    // Adições feitas para testar o banco
+
+    // Teste para mostrar as localizações no banco de dados
+    val locationsFromDb: StateFlow<List<LocationEntity>> =
+        locationDao.getLocations() // DAO deve retornar Flow<List<LocationEntity>>
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
+    fun showLocations() {
+        viewModelScope.launch {
+            locationDao.getLocations().collect { locations ->
+                locations.forEach {
+                    Log.d("Location", "ID: ${it.id}, Name: ${it.name}")
+                }
+            }
+        }
+    }
+
+    // Teste para salvar a localização no banco de dados
+    fun saveLocation(name: String) {
+        val newLocation = LocationEntity(name = name)
+        viewModelScope.launch {
+            locationDao.insert(newLocation)
+        }
+    }
+
+    // Teste para excluir as localizações do banco de dados
+    fun deleteLocation(location: LocationEntity) {
+        viewModelScope.launch {
+            locationDao.delete(location)
+        }
+    }
 }

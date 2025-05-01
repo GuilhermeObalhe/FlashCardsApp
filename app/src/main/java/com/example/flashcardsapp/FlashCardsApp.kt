@@ -3,6 +3,7 @@
 package com.example.flashcardsapp
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -23,7 +24,7 @@ import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 @Composable
 fun FlashCardsApp() {
     val navController = rememberNavController()
-    val appViewModel: AppViewModel = viewModel()
+    val appViewModel: AppViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = "assuntos") {
 

@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
 
     id("com.google.dagger.hilt.android") version "2.55"
+    id("kotlin-kapt")
 
     alias(libs.plugins.google.devtools.ksp)
 }
@@ -59,6 +60,13 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.room.compiler){
+        exclude(group = "com.intellij", module = "annotations")
+    }
+    implementation(libs.androidx.room.runtime.android){
+        exclude(group = "com.intellij", module = "annotations")
+    }
+    kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -86,7 +94,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Serialization
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json.v160)
 
     implementation(libs.androidx.activity.ktx)
 
