@@ -17,9 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flashcardsapp.data.entities.LocationEntity
-import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.Subject
 import com.example.flashcardsapp.ui.components.SubjectCard
 import com.example.flashcardsapp.ui.components.Title

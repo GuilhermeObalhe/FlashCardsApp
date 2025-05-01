@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.flashcardsapp.data.entities.SubjectEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubjectDao {
@@ -19,5 +20,5 @@ interface SubjectDao {
     suspend fun delete(subject: SubjectEntity)
 
     @Query("SELECT * FROM Subjects")
-    suspend fun getAllSubjects(): List<SubjectEntity>
+    fun getAllSubjects(): Flow<List<SubjectEntity>>
 }

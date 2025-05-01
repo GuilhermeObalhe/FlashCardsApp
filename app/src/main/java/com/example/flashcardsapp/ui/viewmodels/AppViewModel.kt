@@ -5,8 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.flashcardsapp.data.dao.BasicFlashcardDao
+import com.example.flashcardsapp.data.dao.ClozeFlashcardDao
 import com.example.flashcardsapp.data.dao.LocationDao
+import com.example.flashcardsapp.data.dao.QuizFlashcardDao
+import com.example.flashcardsapp.data.dao.SubjectDao
+import com.example.flashcardsapp.data.dao.SubjectDao_Impl
 import com.example.flashcardsapp.data.entities.LocationEntity
+import com.example.flashcardsapp.data.entities.SubjectEntity
 import com.example.flashcardsapp.entities.BasicFlashcard
 import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.QuizCard
@@ -16,12 +22,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-    private val locationDao: LocationDao) : ViewModel() {
+    private val locationDao: LocationDao,
+    private val subjectDao: SubjectDao,
+    private val basicFlashcardDao: BasicFlashcardDao,
+    private val quizFlashcardDao: QuizFlashcardDao,
+    private val clozeFlashcardDao: ClozeFlashcardDao,
+    ) : ViewModel()
+{
 
     // Lista de assuntos (mockada)
     val subjects = mutableStateListOf(
@@ -32,14 +43,20 @@ class AppViewModel @Inject constructor(
 
     // Adiciona novo assunto
     fun addSubject(name: String) {
-        val id = (subjects.size + 1).toString()
-        subjects.add(Subject(id, name))
+        viewModelScope.launch {
+            val newSubject = SubjectEntity(name = name)
+            subjectDao.insert(newSubject)
+            Log.d("Adicionando assunto", "${subjectDao.getAllSubjects().collect { it.size }}")
+        }
     }
 
     // Remove assunto e os exercícios associados
     fun removeSubject(subject: Subject) {
-        subjects.remove(subject)
-        //Remover todos os exercicios do assunto
+        val transformedSubject = SubjectEntity(id = subject.id.toLong(), name = subject.name)
+        viewModelScope.launch {
+            subjectDao.delete(transformedSubject)
+            Log.d("Removendo assunto", "${subjectDao.getAllSubjects().collect { it.size }}")
+        }
     }
 
     // Lista de flashcards basic mockados
