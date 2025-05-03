@@ -25,7 +25,6 @@ fun CreateExerciseScreen(
     onNavigateToClozeExercise: () -> Unit
 ) {
     println("CreateExerciseScreen, assunto: $subjectId")
-    Log.d("Tamanho da lista", "${appViewModel.flashcardsBasic.size}")
     Scaffold {
         LazyColumn(
             modifier = Modifier.padding(horizontal = 40.dp)

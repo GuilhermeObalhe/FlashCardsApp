@@ -10,10 +10,13 @@ import com.example.flashcardsapp.data.dao.ClozeFlashcardDao
 import com.example.flashcardsapp.data.dao.LocationDao
 import com.example.flashcardsapp.data.dao.QuizFlashcardDao
 import com.example.flashcardsapp.data.dao.SubjectDao
-import com.example.flashcardsapp.data.dao.SubjectDao_Impl
+import com.example.flashcardsapp.data.entities.BasicFlashcardEntity
+import com.example.flashcardsapp.data.entities.ClozeFlashcardEntity
 import com.example.flashcardsapp.data.entities.LocationEntity
+import com.example.flashcardsapp.data.entities.QuizFlashcardEntity
 import com.example.flashcardsapp.data.entities.SubjectEntity
 import com.example.flashcardsapp.entities.BasicFlashcard
+import com.example.flashcardsapp.entities.ClozeFlashcard
 import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.entities.Subject
@@ -22,54 +25,163 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val locationDao: LocationDao,
     private val subjectDao: SubjectDao,
-    private val basicFlashcardDao: BasicFlashcardDao,
-    private val quizFlashcardDao: QuizFlashcardDao,
-    private val clozeFlashcardDao: ClozeFlashcardDao,
-    ) : ViewModel()
-{
-
-    // Lista de assuntos (mockada)
-    val subjects = mutableStateListOf(
-        Subject("1", "Português"),
-        Subject("2", "História")
-    )
+    private val flashcardBasicDao: BasicFlashcardDao,
+    private val flashcardQuizDao: QuizFlashcardDao,
+    private val flashcardClozeDao: ClozeFlashcardDao
+) : ViewModel() {
 
 
-    // Adiciona novo assunto
-    fun addSubject(name: String) {
+    //
+    //
+    // ASSUNTOS: coleta, adição e exclusão
+    //
+    //
+
+    val subjectsFromDb: StateFlow<List<SubjectEntity>> =
+        subjectDao.getAllSubjects()
+            .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+    fun saveSubject(name: String) {
+        val newSubject = SubjectEntity(name = name)
         viewModelScope.launch {
-            val newSubject = SubjectEntity(name = name)
             subjectDao.insert(newSubject)
-            Log.d("Adicionando assunto", "${subjectDao.getAllSubjects().collect { it.size }}")
         }
     }
 
-    // Remove assunto e os exercícios associados
-    fun removeSubject(subject: Subject) {
-        val transformedSubject = SubjectEntity(id = subject.id.toLong(), name = subject.name)
+    fun deleteSubject(subject: SubjectEntity) {
         viewModelScope.launch {
-            subjectDao.delete(transformedSubject)
-            Log.d("Removendo assunto", "${subjectDao.getAllSubjects().collect { it.size }}")
+            subjectDao.delete(subject)
         }
     }
 
-    // Lista de flashcards basic mockados
-    val flashcardsBasic = mutableStateListOf<BasicFlashcard>(
-        BasicFlashcard("1", "1", "Qual é a capital do Brasil?", "Brasília"),
-        BasicFlashcard("2", "1", "Quem pintou a Mona Lisa?", "Leonardo da Vinci"),
-    )
+    //
+    //
+    // BasicFlashcard: coleta, adição e exclusão
+    //
+    //
+    val flascardsBasicFromDb: StateFlow<List<BasicFlashcardEntity>> =
+        flashcardBasicDao.getAllBasicFlashcards()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
+    fun saveFlashcardBasic(subjectId: String, question: String, answer: String) {
+        val newFlashcard = BasicFlashcardEntity(
+            subjectId = subjectId.toInt(),
+            question = question, answer = answer,
+            lastLocationId = selectedLocation.value?.id?.toInt(),
+            reviewTime = 0
+        )
+        viewModelScope.launch {
+            flashcardBasicDao.insert(newFlashcard)
+        }
 
-    fun addFlashcardBasic(subjectId: String, front: String, back: String) {
-        val id = (flashcardsBasic.size + 1).toString()
-        flashcardsBasic.add(BasicFlashcard(id, subjectId, front, back))
-        Log.d("Na ViewModel", "Tamanho = ${flashcardsBasic.size}")
     }
+
+    fun deleteFlashcardBasic(BasicFlashcard: BasicFlashcardEntity){
+        viewModelScope.launch {
+            flashcardBasicDao.delete(
+                BasicFlashcard
+            )
+        }
+    }
+
+    //
+    //
+    // QuizFlashcard: coleta, adição e exclusão
+    //
+    //
+
+    val flashcardQuizFromDb: StateFlow<List<QuizFlashcardEntity>> =
+        flashcardQuizDao.getAllQuizFlashcards()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
+
+    fun saveFlashcardQuiz(subjectId: String, question: String, options: List<String>, correctAnswerIndex: Int) {
+        val newFlashcard = QuizFlashcardEntity(
+            subjectId = subjectId.toInt(),
+            question = question,
+            options = options,
+            correctIndex = correctAnswerIndex,
+            lastLocationId = selectedLocation.value?.id?.toInt(),
+            reviewTime = 0
+            )
+        viewModelScope.launch {
+            flashcardQuizDao.insertQuizFlashcard(newFlashcard)
+        }
+    }
+    fun deleteFlashcardQuiz(QuizFlashcard: QuizFlashcardEntity){
+        viewModelScope.launch {
+            flashcardQuizDao.deleteQuizFlashcard(
+                QuizFlashcard
+            )
+        }
+    }
+
+    //
+    //
+    // ClozeFlashcard: coleta, adição e exclusão
+    //
+    //
+
+    val flashcardClozeFromDb: StateFlow<List<ClozeFlashcardEntity>> =
+        flashcardClozeDao.getAllClozeFlashcards()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList()
+            )
+
+    fun saveFlashcardCloze(subjectId: String, text: String, gaps: List<String>) {
+        val newFlashcard = ClozeFlashcardEntity(
+            subjectId = subjectId.toInt(),
+            fullText = text,
+            gaps = gaps,
+            lastLocationId = selectedLocation.value?.id?.toInt(),
+            reviewTime = 0,
+            )
+        viewModelScope.launch {
+            flashcardClozeDao.insertClozeFlashcard(newFlashcard)
+        }
+
+    }
+
+    fun deleteFlashcardCloze(ClozeFlashcard: ClozeFlashcardEntity){
+        viewModelScope.launch {
+            flashcardClozeDao.deleteClozeFlashcard(
+                ClozeFlashcard
+            )
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     val flashcardQuiz = mutableStateListOf<QuizCard>(
         QuizCard("1", "1", "Qual é a capital do Brasil?", listOf("São Paulo", "Rio de Janeiro", "Brasília", "Belo Horizonte"), 3),
@@ -84,12 +196,14 @@ class AppViewModel @Inject constructor(
         flashcardQuiz.add(quizCard)
     }
 
+    val flashcardCloze = mutableStateListOf<ClozeFlashcard>()
+    fun addClozeCard(subjectId: String, text: String, gaps: List<String>) {
+        val id = (flashcardCloze.size + 1).toString()
+        val clozeCard = ClozeFlashcard(id, subjectId, text, gaps)
+        flashcardCloze.add(clozeCard)
+    }
 
-    val locations = mutableStateListOf(
-        Location("1", "Quarto"),
-        Location("2", "Biblioteca"),
-        Location("3", "Ônibus")
-    )
+    val locations = mutableStateListOf<LocationEntity>()
 
     val selectedLocation = mutableStateOf<LocationEntity?>(null)
 

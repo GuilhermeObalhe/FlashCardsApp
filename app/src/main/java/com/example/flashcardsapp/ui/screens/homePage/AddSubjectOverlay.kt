@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.flashcardsapp.data.entities.SubjectEntity
 import com.example.flashcardsapp.ui.components.RoundedOutlinedButton
 import com.example.flashcardsapp.ui.components.Title
 import com.example.flashcardsapp.ui.viewmodels.AppViewModel
@@ -30,7 +31,8 @@ import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 @Composable
 fun AddSubjectOverlay(
     isOpen: MutableState<Boolean>,
-    appViewModel: AppViewModel
+    appViewModel: AppViewModel,
+
 ) {
     val newSubjectName = remember { mutableStateOf("") }
 
@@ -67,10 +69,8 @@ fun AddSubjectOverlay(
                         onClick = {
                             val name = newSubjectName.value.trim()
                             if (name.isNotEmpty()) {
-                                println("Clicou em Adicionar: $name")
-                                appViewModel.addSubject(name)     // POST /subjects :contentReference[oaicite:1]{index=1}
+                                appViewModel.saveSubject(name)
                                 isOpen.value = false
-                                newSubjectName.value = ""
                             }
                         }
                     )

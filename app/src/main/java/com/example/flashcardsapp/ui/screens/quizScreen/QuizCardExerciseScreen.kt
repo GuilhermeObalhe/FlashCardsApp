@@ -32,17 +32,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.flashcardsapp.data.entities.QuizFlashcardEntity
 import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.ui.components.HeaderButtons
 
 @Composable
 fun QuizCardExerciseScreen(
     onBackClick: () -> Unit,
-    quizCard: QuizCard
+    quizCard: QuizFlashcardEntity
 ){
     val question = quizCard.question
     val options = quizCard.options
-    val correctAnswer = quizCard.correctAnswerIndex - 1
+    val correctAnswer = quizCard.correctIndex
 
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(-1) }
 

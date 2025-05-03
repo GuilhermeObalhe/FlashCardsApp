@@ -8,12 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.flashcardsapp.data.entities.BasicFlashcardEntity
 import com.example.flashcardsapp.entities.BasicFlashcard
 import com.example.flashcardsapp.ui.components.HeaderButtons
 
 @Composable
 fun FlipCardExerciseScreen(
-    flashcard: BasicFlashcard,
+    flashcard: BasicFlashcardEntity,
     onBackClick: () -> Unit
 
 ){

@@ -1,7 +1,9 @@
 package com.example.flashcardsapp.ui.screens.subjectPage
 
 import PoppinsBold
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,54 +29,52 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseCard(
     onButtonClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit,
     text: String
-){
+) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF2EBF96)),
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .border(1.dp, Color.White, RoundedCornerShape(20.dp)),
+            .border(1.dp, Color.White, RoundedCornerShape(20.dp))
+            .combinedClickable(
+                onClick = { onButtonClick?.invoke() },
+                onLongClick = onLongClick
+            ),
         elevation = CardDefaults.cardElevation(5.dp)
     ) {
-        Button(
-            onClick = onButtonClick ?: {},
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            elevation = ButtonDefaults.buttonElevation(0.dp),
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(20.dp) // corrige "corner" → "shape"
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+                color = Color.White,
+                fontFamily = PoppinsBold,
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = text,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp,
-                    color = Color.White,
-                    fontFamily = PoppinsBold,
-                    modifier = Modifier
-                        .padding(start = 30.dp)
-                        .weight(1f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "Ir para assunto",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .padding(start = 20.dp, end = 30.dp)
-                        .size(32.dp)
-                )
-            }
+                    .padding(start = 30.dp)
+                    .weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = "Ir para assunto",
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 30.dp)
+                    .size(32.dp)
+            )
         }
     }
 }

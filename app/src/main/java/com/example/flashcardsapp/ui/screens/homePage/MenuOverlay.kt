@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flashcardsapp.data.entities.LocationEntity
+import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.ui.components.Title
 import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 

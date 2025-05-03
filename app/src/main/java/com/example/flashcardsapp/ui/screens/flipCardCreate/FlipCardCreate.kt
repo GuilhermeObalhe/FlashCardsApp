@@ -114,15 +114,13 @@ fun FlipCardCreateScreen(
                         + "front: ${front}\n"
                         + "back: ${back}\n"
                     )
-                    val basicFlashcard = BasicFlashcard(
-                        id = "0",
+
+                    //Ai salva isso na API
+                    appViewModel.saveFlashcardBasic(
                         subjectId = subjectId.toString(),
                         question = front,
                         answer = back
                     )
-                    //Ai salva isso na API
-                    appViewModel.addFlashcardBasic(basicFlashcard.subjectId, basicFlashcard.question, basicFlashcard.answer)
-
                     navigateToSubjectDetailScreen()
                 }
             )

@@ -148,11 +148,11 @@ fun QuizCardCreateScreen(
             RoundedOutlinedButton(
                 text = "Adicionar",
                 onClick = {
-                    appViewModel.addQuizCard(
-                        subjectId.toString(),
-                        question,
-                        options,
-                        selectedAnswer - 1
+                    appViewModel.saveFlashcardQuiz(
+                        subjectId = subjectId.toString(),
+                        question = question,
+                        options = options,
+                        correctAnswerIndex = selectedAnswer - 1
                     )
                     navigateToSubjectDetailScreen()
                 }

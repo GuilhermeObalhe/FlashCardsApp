@@ -17,13 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.flashcardsapp.entities.Subject
-import com.example.flashcardsapp.ui.screens.homePage.OptionsMenuOverlay
+import com.example.flashcardsapp.data.entities.SubjectEntity
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SubjectCard(
-    subject: Subject,
+    subject: SubjectEntity,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onDelete: () -> Unit,

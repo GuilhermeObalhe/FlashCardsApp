@@ -54,5 +54,5 @@ object DatabaseModule {
     fun provideSubjectDao(database: FlashcardDatabase): SubjectDao {
         return database.subjectDao()
     }
-    // Adicione outros DAOs se quiser injetar na ViewModel
+    // Adicione outros DAOs se quiser injetar na ViewModel
 }

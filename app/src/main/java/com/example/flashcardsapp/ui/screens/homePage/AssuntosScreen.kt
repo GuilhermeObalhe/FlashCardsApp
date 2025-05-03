@@ -3,7 +3,6 @@ package com.example.flashcardsapp.ui.screens.homePage
 import PoppinsRegular
 import PoppinsSemiBold
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flashcardsapp.data.entities.LocationEntity
-import com.example.flashcardsapp.entities.Subject
+import com.example.flashcardsapp.data.entities.SubjectEntity
+import com.example.flashcardsapp.ui.components.OptionsMenuOverlay
 import com.example.flashcardsapp.ui.components.SubjectCard
 import com.example.flashcardsapp.ui.components.Title
 import com.example.flashcardsapp.ui.viewmodels.AppViewModel
@@ -26,7 +26,7 @@ import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun AssuntosScreen(
-    onNavigateToSubject: (Subject) -> Unit,
+    onNavigateToSubject: (SubjectEntity) -> Unit,
     viewModel: AppViewModel,
     locationsViewModel: AppViewModel,
 ) {
@@ -34,8 +34,9 @@ fun AssuntosScreen(
     val isAddSubjectOpen = remember { mutableStateOf(false) }
     val isMenuOpen = remember { mutableStateOf(false) }
     val isOptionsOpen = remember { mutableStateOf(false) }
-    val selectedSubject = remember { mutableStateOf<Subject?>(null) }
-
+    val selectedSubject = remember { mutableStateOf<SubjectEntity?>(null) }
+    val subjects by viewModel.subjectsFromDb.collectAsState()
+    println("Subjects:::\n" + subjects)
 
     Scaffold {
         LazyColumn(modifier = Modifier.padding(horizontal = 40.dp)) {
@@ -47,7 +48,6 @@ fun AssuntosScreen(
                 Title(
                     text = "Assuntos",
                     subtitle = when {
-                        locationsViewModel.locations.isEmpty() -> "Nenhuma localização criada"
                         locationsViewModel.selectedLocation.value == null -> "Nenhuma localização selecionada"
                         else -> locationsViewModel.selectedLocation.value!!.name
                     },
@@ -61,7 +61,7 @@ fun AssuntosScreen(
                 Spacer(modifier = Modifier.height(60.dp))
             }
 
-            if (viewModel.subjects.isEmpty()) {
+            if (subjects.isEmpty()) {
                 item {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -90,7 +90,7 @@ fun AssuntosScreen(
                     }
                 }
             } else {
-                items(viewModel.subjects) { subject ->
+                items(subjects) { subject ->
                     Column {
                         SubjectCard(
                             subject = subject,
@@ -100,7 +100,7 @@ fun AssuntosScreen(
                                 isOptionsOpen.value = true
                             },
                             onDelete = {
-                                viewModel.removeSubject(subject)
+                                viewModel.deleteSubject(selectedSubject.value!!)
                             },
                             isOptionsMenuOpen = selectedSubject.value?.id == subject.id
                         )
@@ -135,7 +135,8 @@ fun AssuntosScreen(
     if (isAddSubjectOpen.value) {
         AddSubjectOverlay(
             isOpen = isAddSubjectOpen,
-            appViewModel = viewModel
+            appViewModel = viewModel,
+
         )
     }
 
@@ -156,7 +157,7 @@ fun AssuntosScreen(
                 selectedSubject.value = null
             },
             onDelete = {
-                viewModel.removeSubject(selectedSubject.value!!)
+                viewModel.deleteSubject(selectedSubject.value!!)
                 selectedSubject.value = null
             }
         )

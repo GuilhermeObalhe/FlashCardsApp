@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
 import com.example.flashcardsapp.data.entities.BasicFlashcardEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BasicFlashcardDao {
@@ -19,5 +20,5 @@ interface BasicFlashcardDao {
     suspend fun delete(flashcard: BasicFlashcardEntity)
 
     @Query("SELECT * FROM basic_flashcards")
-    suspend fun getAllBasicFlashcards(): List<BasicFlashcardEntity>
+    fun getAllBasicFlashcards(): Flow<List<BasicFlashcardEntity>>
 }

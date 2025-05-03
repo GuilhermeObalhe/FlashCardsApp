@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.flashcardsapp.R
 import com.example.flashcardsapp.data.entities.LocationEntity
+import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.ui.viewmodels.AppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
