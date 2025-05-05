@@ -132,7 +132,7 @@ fun FlashCardsApp() {
             val flashCardList by appViewModel.flascardsBasicFromDb.collectAsState()
 
             val basicFlashcard = flashCardList
-                .filter { it.subjectId == subjectId }
+                .filter { it.subjectId == subjectId?.toLong() }
                 .find { it.id == exerciseId }
 
             if (basicFlashcard != null) {
@@ -149,7 +149,7 @@ fun FlashCardsApp() {
             val exerciseId = it.arguments?.getString("exerciseId")
             val flashCardList by appViewModel.flashcardQuizFromDb.collectAsState()
             val quizFlashcard = flashCardList.filter {
-                it.subjectId == subjectId?.toInt()
+                it.subjectId == subjectId?.toLong()
             }.find {
                 it.id == exerciseId?.toLong()
             }
@@ -168,7 +168,7 @@ fun FlashCardsApp() {
             val flashCardList by appViewModel.flashcardClozeFromDb.collectAsState()
             val clozeFlashcard = flashCardList
                 .filter {
-                    it.subjectId == subjectId?.toInt()
+                    it.subjectId == subjectId?.toLong()
                 }.find {
                     it.id == exerciseId?.toLong()
                 }

@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.ktor.client.core.v237)
+    implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.cio.v237)
     implementation(libs.ktor.client.content.negotiation.v237)
     implementation(libs.ktor.serialization.kotlinx.json.v237)

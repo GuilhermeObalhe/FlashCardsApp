@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "basic_flashcards")
 @Serializable
 data class BasicFlashcardEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val subjectId: Int,
-    val question: String,
-    val answer: String,
-    val lastLocationId: Int?,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+    val subjectId: Long,
+    val front: String,
+    val back: String,
+    val lastLocationId: Long?,
     val reviewTime: Long
 )

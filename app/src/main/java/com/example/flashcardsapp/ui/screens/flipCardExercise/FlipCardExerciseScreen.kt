@@ -28,7 +28,7 @@ fun FlipCardExerciseScreen(
 
         }
         item {
-            FlipCard(flashcard.question, flashcard.answer)
+            FlipCard(flashcard.front, flashcard.back)
         }
     }
 }

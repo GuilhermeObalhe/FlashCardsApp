@@ -20,6 +20,15 @@ import com.example.flashcardsapp.entities.ClozeFlashcard
 import com.example.flashcardsapp.entities.Location
 import com.example.flashcardsapp.entities.QuizCard
 import com.example.flashcardsapp.entities.Subject
+import com.example.flashcardsapp.network.FlashcardService
+import com.example.flashcardsapp.network.FlashcardService.deleteBasicFlashcardByFront
+import com.example.flashcardsapp.network.FlashcardService.deleteClozeFlashcardByText
+import com.example.flashcardsapp.network.FlashcardService.deleteQuizFlashcardByQuestion
+import com.example.flashcardsapp.network.FlashcardService.deleteSubjectByName
+import com.example.flashcardsapp.network.FlashcardService.postBasicFlashcard
+import com.example.flashcardsapp.network.FlashcardService.postClozeFlashcard
+import com.example.flashcardsapp.network.FlashcardService.postQuizFlashcard
+import com.example.flashcardsapp.network.FlashcardService.postSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,12 +64,14 @@ class AppViewModel @Inject constructor(
         val newSubject = SubjectEntity(name = name)
         viewModelScope.launch {
             subjectDao.insert(newSubject)
+            postSubject(newSubject)
         }
     }
 
     fun deleteSubject(subject: SubjectEntity) {
         viewModelScope.launch {
             subjectDao.delete(subject)
+            deleteSubjectByName(subject.name)
         }
     }
 
@@ -77,14 +88,23 @@ class AppViewModel @Inject constructor(
                 initialValue = emptyList()
             )
     fun saveFlashcardBasic(subjectId: String, question: String, answer: String) {
-        val newFlashcard = BasicFlashcardEntity(
-            subjectId = subjectId.toInt(),
-            question = question, answer = answer,
-            lastLocationId = selectedLocation.value?.id?.toInt(),
+        var newFlashcard = BasicFlashcardEntity(
+            subjectId = subjectId.toLong(),
+            front = question,
+            back = answer,
+            lastLocationId = selectedLocation.value?.id,
             reviewTime = 0
         )
         viewModelScope.launch {
             flashcardBasicDao.insert(newFlashcard)
+            newFlashcard = BasicFlashcardEntity(
+                subjectId = subjectId.toLong(),
+                front = question,
+                back = answer,
+                lastLocationId = selectedLocation.value?.id,
+                reviewTime = 0
+            )
+            postBasicFlashcard(newFlashcard)
         }
 
     }
@@ -94,6 +114,7 @@ class AppViewModel @Inject constructor(
             flashcardBasicDao.delete(
                 BasicFlashcard
             )
+            deleteBasicFlashcardByFront(BasicFlashcard.front)
         }
     }
 
@@ -113,15 +134,16 @@ class AppViewModel @Inject constructor(
 
     fun saveFlashcardQuiz(subjectId: String, question: String, options: List<String>, correctAnswerIndex: Int) {
         val newFlashcard = QuizFlashcardEntity(
-            subjectId = subjectId.toInt(),
+            subjectId = subjectId.toLong(),
             question = question,
             options = options,
             correctIndex = correctAnswerIndex,
-            lastLocationId = selectedLocation.value?.id?.toInt(),
+            lastLocationId = selectedLocation.value?.id,
             reviewTime = 0
             )
         viewModelScope.launch {
             flashcardQuizDao.insertQuizFlashcard(newFlashcard)
+            postQuizFlashcard(newFlashcard)
         }
     }
     fun deleteFlashcardQuiz(QuizFlashcard: QuizFlashcardEntity){
@@ -129,6 +151,7 @@ class AppViewModel @Inject constructor(
             flashcardQuizDao.deleteQuizFlashcard(
                 QuizFlashcard
             )
+            deleteQuizFlashcardByQuestion(QuizFlashcard.question)
         }
     }
 
@@ -148,14 +171,15 @@ class AppViewModel @Inject constructor(
 
     fun saveFlashcardCloze(subjectId: String, text: String, gaps: List<String>) {
         val newFlashcard = ClozeFlashcardEntity(
-            subjectId = subjectId.toInt(),
+            subjectId = subjectId.toLong(),
             fullText = text,
             gaps = gaps,
-            lastLocationId = selectedLocation.value?.id?.toInt(),
+            lastLocationId = selectedLocation.value?.id,
             reviewTime = 0,
             )
         viewModelScope.launch {
             flashcardClozeDao.insertClozeFlashcard(newFlashcard)
+            postClozeFlashcard(newFlashcard)
         }
 
     }
@@ -165,6 +189,7 @@ class AppViewModel @Inject constructor(
             flashcardClozeDao.deleteClozeFlashcard(
                 ClozeFlashcard
             )
+            deleteClozeFlashcardByText(ClozeFlashcard.fullText)
         }
     }
 
@@ -237,6 +262,7 @@ class AppViewModel @Inject constructor(
         val newLocation = LocationEntity(name = name)
         viewModelScope.launch {
             locationDao.insert(newLocation)
+            FlashcardService.postLocation(newLocation)
         }
     }
 
@@ -244,6 +270,7 @@ class AppViewModel @Inject constructor(
     fun deleteLocation(location: LocationEntity) {
         viewModelScope.launch {
             locationDao.delete(location)
+            FlashcardService.deleteLocationByName(location.name)
         }
     }
 }

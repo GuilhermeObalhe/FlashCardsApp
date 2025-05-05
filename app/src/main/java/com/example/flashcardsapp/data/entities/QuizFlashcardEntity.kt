@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "quiz_flashcards")
 @Serializable
 data class QuizFlashcardEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val subjectId: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+    val subjectId: Long,
     val question: String,
     val options: List<String>, // Armazena as opções de resposta
     val correctIndex: Int,
-    val lastLocationId: Int?,
+    val lastLocationId: Long?,
     val reviewTime: Long
 )
 

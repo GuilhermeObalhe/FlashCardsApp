@@ -53,17 +53,17 @@ fun SubjectDetailScreen(
     // Obter a lista de flashcards aqui
     val basicFlashcards by appViewModel.flascardsBasicFromDb.collectAsState()
     val listaBasicFlashcard = basicFlashcards.filter {
-        it.subjectId == subject.id.toInt()
+        it.subjectId == subject.id
     }
 
     val quizFlashcards by appViewModel.flashcardQuizFromDb.collectAsState()
     val listaQuizFlashcard = quizFlashcards.filter {
-        it.subjectId == subjectId.toInt()
+        it.subjectId == subjectId.toLong()
     }
 
     val clozeFlashcards by appViewModel.flashcardClozeFromDb.collectAsState()
     val listaClozeFlashcard = clozeFlashcards.filter {
-        it.subjectId == subjectId.toInt()
+        it.subjectId == subjectId.toLong()
     }
 
     val selectedBasicExercise = remember{
@@ -139,7 +139,7 @@ fun SubjectDetailScreen(
                 Log.d("Na tela Subject", "tamanho = ${listaBasicFlashcard.size}")
                 items(listaBasicFlashcard) { item ->
                     ExerciseCard(
-                        text = item.question,
+                        text = item.front,
                         onButtonClick = { navigateToFlipCardExerciseScreen(item) },
                         onLongClick = {
                             selectedBasicExercise.value = item

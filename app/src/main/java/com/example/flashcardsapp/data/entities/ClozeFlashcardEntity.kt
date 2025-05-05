@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "cloze_flashcards")
 @Serializable
 data class ClozeFlashcardEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val subjectId: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+    val subjectId: Long,
     val fullText: String, // Texto completo com lacunas
     val gaps: List<String>, // Parte que deve ser preenchida
-    val lastLocationId: Int?,
+    val lastLocationId: Long?,
     val reviewTime: Long
 )

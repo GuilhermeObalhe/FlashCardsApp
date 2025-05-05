@@ -10,6 +10,7 @@ ktorClientAndroid = "2.3.4"
 ktorClientCioVersion = "2.3.7"
 ktorClientContentNegotiationVersion = "2.3.7"
 ktorClientCoreVersion = "2.3.7"
+ktorClientOkhttp = "2.3.4"
 ktorSerializationKotlinxJsonVersion = "2.3.7"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
@@ -51,6 +52,7 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-cio-v237 = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCioVersion" }
 ktor-client-content-negotiation-v237 = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiationVersion" }
 ktor-client-core-v237 = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCoreVersion" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
 ktor-serialization-kotlinx-json-v237 = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJsonVersion" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }

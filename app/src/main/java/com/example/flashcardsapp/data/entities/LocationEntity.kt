@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LocationEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String // Nome da localização
+    val name: String
 )
